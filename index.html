@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Grade Analyzer</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .form-container {
+            margin-bottom: 20px;
+        }
+        .result-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Student Grade Analyzer</h1>
+
+<div class="form-container">
+    <h2>Enter Student Data</h2>
+    <form id="studentForm">
+        <label for="studentName">Student Name:</label>
+        <input type="text" id="studentName" required><br><br>
+
+        <label for="grade1">Grade 1:</label>
+        <input type="number" id="grade1" min="2" max="5" required><br><br>
+
+        <label for="grade2">Grade 2:</label>
+        <input type="number" id="grade2" min="2" max="5" required><br><br>
+
+        <label for="grade3">Grade 3:</label>
+        <input type="number" id="grade3" min="2" max="5" required><br><br>
+
+        <label for="grade4">Grade 4:</label>
+        <input type="number" id="grade4" min="2" max="5" required><br><br>
+
+        <label for="grade5">Grade 5:</label>
+        <input type="number" id="grade5" min="2" max="5" required><br><br>
+
+        <button type="button" id="addStudentBtn">Add Student</button>
+        <button type="button" id="generateRandomBtn">Generate Random Grades</button>
+    </form>
+</div>
+
+<div class="result-container">
+    <h2>Summary</h2>
+    <p>Excellent Students: <span id="excellentCount">0</span></p>
+    <p>Good Students: <span id="goodCount">0</span></p>
+    <p>Failing Students: <span id="failingCount">0</span></p>
+    <p>Failing Students List: <span id="failingList"></span></p>
+</div>
+
+<script>
+    let students = [];
+    let excellentCount = 0;
+    let goodCount = 0;
+    let failingCount = 0;
+    let failingList = [];
+
+    function analyzeStudent(student) {
+        const grades = student.grades;
+        if (grades.every(grade => grade === 5)) {
+            excellentCount++;
+        } else if (grades.includes(2)) {
+            failingCount++;
+            failingList.push(student.name);
+        } else if (grades.every(grade => grade === 4 || grade === 5)) {
+            goodCount++;
+        } else {
+            failingCount++;
+            failingList.push(student.name);
+        }
+    }
+
+    function updateSummary() {
+        $('#excellentCount').text(excellentCount);
+        $('#goodCount').text(goodCount);
+        $('#failingCount').text(failingCount);
+        $('#failingList').text(failingList.join(", "));
+    }
+
+    $('#addStudentBtn').click(function () {
+        const name = $('#studentName').val();
+        const grades = [
+            parseInt($('#grade1').val()),
+            parseInt($('#grade2').val()),
+            parseInt($('#grade3').val()),
+            parseInt($('#grade4').val()),
+            parseInt($('#grade5').val())
+        ];
+
+        if (name && grades.every(grade => grade >= 2 && grade <= 5)) {
+            const student = { name, grades };
+            students.push(student);
+            analyzeStudent(student);
+            updateSummary();
+            $('#studentForm')[0].reset();
+        } else {
+            alert("Please fill all fields with valid data.");
+        }
+    });
+
+    $('#generateRandomBtn').click(function () {
+        $('#grade1').val(Math.floor(Math.random() * 4) + 2);
+        $('#grade2').val(Math.floor(Math.random() * 4) + 2);
+        $('#grade3').val(Math.floor(Math.random() * 4) + 2);
+        $('#grade4').val(Math.floor(Math.random() * 4) + 2);
+        $('#grade5').val(Math.floor(Math.random() * 4) + 2);
+    });
+</script>
+
+</body>
+</html>
